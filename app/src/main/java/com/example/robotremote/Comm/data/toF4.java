@@ -423,17 +423,19 @@ public class toF4 implements Runnable
                     }
                     else if (sta == 3) {
                         if (sendflag[CMD.SPEED.ordinal()] != 0) {//一种发送命令
-                            if (sendflag[CMD.SPEED.ordinal()] % 4 == 2) {//一种发送命令 中速
+                            if(RobotStatus.status==InfoForRobot.STATUS.QUICKSTOP||RobotStatus.status==InfoForRobot.STATUS.STOP)
+                                setSpeed(0);
+                            else if (sendflag[CMD.SPEED.ordinal()] % 4 == 2) {//一种发送命令 中速
                                 setSpeed(50);
                                 sendflag[CMD.SPEED.ordinal()] += 4;
                                 if (sendflag[CMD.SPEED.ordinal()] > 5) sendflag[CMD.SPEED.ordinal()] = 0;//超过三次不再发送
                             }
-                            if (sendflag[CMD.SPEED.ordinal()] % 4 == 1) {//一种发送命令 低速
+                            else if (sendflag[CMD.SPEED.ordinal()] % 4 == 1) {//一种发送命令 低速
                                 setSpeed(10);
                                 sendflag[CMD.SPEED.ordinal()] += 4;
                                 if (sendflag[CMD.SPEED.ordinal()] > 5) sendflag[CMD.SPEED.ordinal()] = 0;//超过三次不再发送
                             }
-                            if (sendflag[CMD.SPEED.ordinal()] % 4 == 3) {//一种发送命令 高速
+                            else if (sendflag[CMD.SPEED.ordinal()] % 4 == 3) {//一种发送命令 高速
                                 setSpeed(100);
                                 sendflag[CMD.SPEED.ordinal()] += 4;
                                 if (sendflag[CMD.SPEED.ordinal()] > 5) sendflag[CMD.SPEED.ordinal()] = 0;//超过三次不再发送

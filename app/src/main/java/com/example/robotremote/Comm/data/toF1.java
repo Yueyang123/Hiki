@@ -84,7 +84,7 @@ public class toF1 implements Runnable {
         tcmd[0] = (cmd[Cmdtof1.ordinal()][0]);
         tcmd[1] = (cmd[Cmdtof1.ordinal()][1]);
         byte pwmspeed=0;
-        if (sendflag[CMD.SPEED.ordinal()] ==0)pwmspeed=0;
+        if (sendflag[CMD.SPEED.ordinal()] ==0||RobotStatus.status==InfoForRobot.STATUS.QUICKSTOP||RobotStatus.status==InfoForRobot.STATUS.STOP)pwmspeed=0;
         else if (sendflag[CMD.SPEED.ordinal()] == 1)pwmspeed=10;
         else if (sendflag[CMD.SPEED.ordinal()] == 2)pwmspeed=50;
         else if (sendflag[CMD.SPEED.ordinal()] == 3)pwmspeed=100;

@@ -96,9 +96,11 @@ public class KeyCol implements Runnable{
             if(SWStatus!=Swstatustemp) {
                 if (SWStatus[SWKind.STOPKey.ordinal()]!=Swstatustemp[SWKind.STOPKey.ordinal()]) {//急停命令发生跳变
                     if (SWStatus[SWKind.STOPKey.ordinal()] == 0) {
+                        toF4.clear();
                         toF4.sendflag[toF4.CMD.QUICKSTOP.ordinal()] = 1;
                         toF1.sendflag[toF1.CMD.QUICKSTOP.ordinal()] = 1;
                     } else {
+                        toF4.clear();
                         toF4.sendflag[toF4.CMD.QUICKSTOP.ordinal()] = 0;
                         toF1.sendflag[toF1.CMD.QUICKSTOP.ordinal()] = 0;
                     }
@@ -113,6 +115,7 @@ public class KeyCol implements Runnable{
                         toF1.sendflag[toF1.CMD.LEFT.ordinal()]=1;
                     }
                     else if (SWStatus[SWKind.DIRKey1.ordinal()] == 1 && SWStatus[SWKind.DIRKey2.ordinal()] == 1) {
+                        toF4.clear();
                         toF4.sendflag[toF4.CMD.STOP.ordinal()] = 1;
                         toF1.sendflag[toF1.CMD.STOP.ordinal()] = 1;
                     }

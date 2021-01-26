@@ -63,16 +63,15 @@ public class infoForMotor {
         else if(temp==2) RobotStatus.infof1.pwmspeed=50;
         else if(temp==1) RobotStatus.infof1.pwmspeed=10;
         else if(temp==0) RobotStatus.infof1.pwmspeed=0;
-        if(RobotStatus.infof1.pwmspeed==0)RobotStatus.status= InfoForRobot.STATUS.STOP;
-        if(((data>>5)&1)!=0&&RobotStatus.status!=InfoForRobot.STATUS.STOP&&RobotStatus.status!=InfoForRobot.STATUS.QUICKSTOP){
+        if(((data>>5)&1)!=0&&RobotStatus.status!=InfoForRobot.STATUS.QUICKSTOP){
             FR=true;
             RobotStatus.status= InfoForRobot.STATUS.LEFT;
         }
-        if(((data>>5)&1)==0&&RobotStatus.status!=InfoForRobot.STATUS.STOP&&RobotStatus.status!=InfoForRobot.STATUS.QUICKSTOP) {
+        if(((data>>5)&1)==0&&RobotStatus.status!=InfoForRobot.STATUS.QUICKSTOP) {
             FR=false;
             RobotStatus.status= InfoForRobot.STATUS.RIGHT;
         }
-
+        if(RobotStatus.infof1.pwmspeed==0)RobotStatus.status= InfoForRobot.STATUS.STOP;
         if(((data>>2)&1)!=0)DRIVER_WARING=true;
         else DRIVER_WARING=false;
         if(((data>>1)&1)!=0)DISTANCE_WARING=true;
