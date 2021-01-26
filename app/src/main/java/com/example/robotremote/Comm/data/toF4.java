@@ -3,6 +3,7 @@ import android.util.Log;
 import com.example.robotremote.Comm.Warn.RobotWarn;
 import com.example.robotremote.Hardware.NetCol.*;
 import com.example.robotremote.Comm.CRC.Crc;
+import com.example.robotremote.Hardware.Beep.Beep;
 import java.util.Calendar;
 /**
  * @author yueyang
@@ -232,7 +233,6 @@ public class toF4 implements Runnable
                             case 0x83:
                                 temp1=new byte[2];
                                 net.read(temp1);
-                                Log.d(TAG,"姿态告警");
                                 for(int i=0;i<temp1.length;i++) RobotStatus.data.daTa[i+2]=temp1[i];
                                 RobotStatus.data.length=4;
                                 warntimes[2] = 0;
@@ -307,8 +307,10 @@ public class toF4 implements Runnable
                         }
                         if ((temp[1] & 0xFF) != 0x84) {
                             warntimes[3]++;
-                            if (warntimes[3] % 10 == 0)
+                            if (warntimes[3] % 10 == 0){
+                                Beep.BeepOff();
                                 RobotWarn.WarnFlag[RobotWarn.Warn.DISTANCEWarn.ordinal()] = false;//警告
+                            }
                         }
                         if ((temp[1] & 0xFF) != 0x82) {
                             warntimes[4]++;

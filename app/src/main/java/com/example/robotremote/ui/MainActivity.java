@@ -218,6 +218,13 @@ public class MainActivity extends Activity {
                         alarm.clearColorFilter();
                     }else robotwarnTextview.setText("运行正常");
                     break;
+
+                case 0x04:
+                    /**
+                     * 电量
+                     * */
+                    batteryView.setPower(adcCol.getPower());
+                    break;
                 default:
                     break;
             }
@@ -234,6 +241,17 @@ public class MainActivity extends Activity {
             while (true)
             {
                 Heart++;//逻辑子线程心跳包
+                if(Heart%1000==0) {//摄像头重新链接
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Message message = new Message();
+                            message.what = 0x04;
+                            handler.sendMessage(message);
+                        }
+                    }).start();
+                }
+
                 if(Heart%4000==0) {//摄像头重新链接
                     if (login[0].loginStatus == false) {
                         Thread Hiki = new Thread() {
