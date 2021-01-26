@@ -1,6 +1,9 @@
 package com.example.robotremote.Comm.Warn;
 import android.util.Log;
+
+import com.example.robotremote.Hardware.Key.KeyCol;
 import com.example.robotremote.Hardware.Led.LedCol;
+import com.example.robotremote.Hardware.Beep.Beep;
 /**
  * @author yueyang
  * @version V1.0
@@ -46,6 +49,11 @@ public  class RobotWarn implements Runnable{
             WarnFlag[i]=false;
     }
 
+    public void clear(){
+        for(int i=0;i<11;i++)
+            WarnFlag[i]=false;
+    }
+
     public void run()
     {
         while (true)
@@ -66,6 +74,7 @@ public  class RobotWarn implements Runnable{
             }
             else if(WarnFlag[Warn.LORAWarn.ordinal()]==true&&WarnFlag[Warn.WIFIWarn.ordinal()]==true){
                 LedCol.LedOff(LedCol.LED.GREEN, LedCol.BLINK.NOBLINK);//绿灯常灭
+                Beep.BeepOn();
                 //Log.d(TAG,"通讯警告");
             }
             /**
@@ -74,11 +83,13 @@ public  class RobotWarn implements Runnable{
             if(WarnFlag[Warn.GASWarn.ordinal()]==true)
             {
                 LedCol.LedOn(LedCol.LED.RED, LedCol.BLINK.DOUBLEBLINK);
+                Beep.BeepOn();
                 Log.d(TAG,"瓦斯警告");
             }
             else if(WarnFlag[Warn.SMOKEWarn.ordinal()]==true)
             {
                 LedCol.LedOn(LedCol.LED.RED,LedCol.BLINK.SINGLEBLINK);
+                Beep.BeepOn();
                 Log.d(TAG,"烟雾警告");
             }else
             {
@@ -90,15 +101,22 @@ public  class RobotWarn implements Runnable{
             if(WarnFlag[Warn.POSTUREWarn.ordinal()]==true)
             {
                 LedCol.LedOn(LedCol.LED.YELLO, LedCol.BLINK.SINGLEBLINK);
+                Beep.BeepOn();
                 Log.d(TAG,"姿态警告");
             }
             else if(WarnFlag[Warn.DISTANCEWarn.ordinal()]==true)
             {
                 LedCol.LedOn(LedCol.LED.YELLO, LedCol.BLINK.DOUBLEBLINK);
+                Beep.BeepOn();
                 Log.d(TAG,"距离警告");
             }else
             {
                 LedCol.LedOff(LedCol.LED.YELLO, LedCol.BLINK.NOBLINK);
+            }
+
+            if(KeyCol.SWStatus[KeyCol.SWKind.REDKey.ordinal()]==0){
+                Beep.BeepOff();
+                clear();//屏蔽所有警告
             }
 
             try {
