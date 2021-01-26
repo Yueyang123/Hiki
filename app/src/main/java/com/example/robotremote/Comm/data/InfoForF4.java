@@ -67,6 +67,7 @@ public class InfoForF4
         totaldistance=bytesToInt16(data.daTa,55+2);
         speed= Math.abs((float)temp-(float)totaldistance)/100;
         speed= (int)data.daTa[57+2];
+        Log.d(TAG,"totaldistance"+Integer.toString((int)totaldistance));
     }
 
     public void show()
