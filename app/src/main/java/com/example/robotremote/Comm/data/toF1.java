@@ -107,109 +107,118 @@ public class toF1 implements Runnable {
             if (Dir == dir.F12REMOTE) {//接受F1的数据
                 byte[] temp1=new byte[1];
                 byte[] temp0=new byte[9];
-                byte[] temp;
-                while (temp1[0]!=0x1A)serialCol.read(temp1);
-                    serialCol.read(temp0);
-                    temp=concat(temp1,temp0);
-                    Log.d(TAG+"RECIVE DATA FROM F1",Integer.toHexString((int) temp[0])+" "+Integer.toHexString((int) temp[1]));
-                    RobotWarn.WarnFlag[RobotWarn.Warn.LORAWarn.ordinal()]=false;
-                    tof1Timeout=10000;
-                    for(int i=0;i<temp.length;i++) RobotStatus.data.daTa[i]=temp[i];
-                    RobotStatus.data.length=10;
-                    RobotStatus.infof1.infomotor.set(temp[2]);
-                    /**
-                     * 更新相应警告
-                     * */
-                    if((temp[3]&1)==1){
-                        warntimes[4] = 0;
-                        RobotWarn.WarnFlag[RobotWarn.Warn.UDPWarn.ordinal()] = true;//警告
+                byte[] temp=new byte[10];
+                //while (temp1[0]!=0x1A)
+                    serialCol.read(temp);
+                    if(temp[0]==0x1a) {
+                        Log.d(TAG + "RECIVE DATA FROM F1", Integer.toHexString((int) temp[0]) + " " + Integer.toHexString((int) temp[1]));
+                        RobotWarn.WarnFlag[RobotWarn.Warn.LORAWarn.ordinal()] = false;
+                        tof1Timeout = 10000;
+                        for (int i = 0; i < temp.length; i++) RobotStatus.data.daTa[i] = temp[i];
+                        RobotStatus.data.length = 10;
+                        RobotStatus.infof1.infomotor.set(temp[2]);
+                        /**
+                         * 更新相应警告
+                         * */
+                        if ((temp[3] & 1) == 1) {
+                            warntimes[4] = 0;
+                            RobotWarn.WarnFlag[RobotWarn.Warn.UDPWarn.ordinal()] = true;//警告
+                        }
+                        if (((temp[3] >> 1) & 1) == 1) {
+                            warntimes[2] = 0;
+                            RobotWarn.WarnFlag[RobotWarn.Warn.POSTUREWarn.ordinal()] = true;//警告
+                        }
+                        if (((temp[3] >> 2) & 1) == 1) {
+                            warntimes[3] = 0;
+                            RobotWarn.WarnFlag[RobotWarn.Warn.DISTANCEWarn.ordinal()] = true;//警告
+                        }
+                        if (((temp[3] >> 3) & 1) == 1) {
+                            warntimes[8] = 0;
+                            RobotWarn.WarnFlag[RobotWarn.Warn.MCUWarn.ordinal()] = true;//警告
+                        }
+                        if (((temp[3] >> 4) & 1) == 1) {
+                            warntimes[5] = 0;
+                            RobotWarn.WarnFlag[RobotWarn.Warn.TCPWarn.ordinal()] = true;//警告
+                        }
+                        if (((temp[3] >> 5) & 1) == 1) {
+                            warntimes[6] = 0;
+                            RobotWarn.WarnFlag[RobotWarn.Warn.MOTORWarn.ordinal()] = true;//警告
+                        }
+                        if (((temp[3] >> 6) & 1) == 1) {
+                            warntimes[0] = 0;
+                            RobotWarn.WarnFlag[RobotWarn.Warn.SMOKEWarn.ordinal()] = true;//警告
+                        }
+                        if (((temp[3] >> 7) & 1) == 1) {
+                            warntimes[1] = 0;
+                            RobotWarn.WarnFlag[RobotWarn.Warn.GASWarn.ordinal()] = true;//警告
+                        }
+                        if ((temp[3] & 1) == 0) {
+                            warntimes[4]++;
+                            if (warntimes[4] % 10 == 0)
+                                RobotWarn.WarnFlag[RobotWarn.Warn.UDPWarn.ordinal()] = false;//警告
+                        }
+                        if (((temp[3] >> 1) & 1) == 0) {
+                            warntimes[2]++;
+                            if (warntimes[2] % 10 == 0)
+                                RobotWarn.WarnFlag[RobotWarn.Warn.POSTUREWarn.ordinal()] = false;//警告
+                        }
+                        if (((temp[3] >> 2) & 1) == 0) {
+                            warntimes[3]++;
+                            if (warntimes[3] % 10 == 0)
+                                RobotWarn.WarnFlag[RobotWarn.Warn.DISTANCEWarn.ordinal()] = false;//警告
+                        }
+                        if (((temp[3] >> 3) & 1) == 0) {
+                            warntimes[8]++;
+                            if (warntimes[8] % 10 == 0)
+                                RobotWarn.WarnFlag[RobotWarn.Warn.MCUWarn.ordinal()] = false;//警告
+                        }
+                        if (((temp[3] >> 4) & 1) == 0) {
+                            warntimes[5]++;
+                            if (warntimes[5] % 10 == 0)
+                                RobotWarn.WarnFlag[RobotWarn.Warn.TCPWarn.ordinal()] = false;//警告
+                        }
+                        if (((temp[3] >> 5) & 1) == 0) {
+                            warntimes[6]++;
+                            if (warntimes[6] % 10 == 0)
+                                RobotWarn.WarnFlag[RobotWarn.Warn.MOTORWarn.ordinal()] = false;//警告
+                        }
+                        if (((temp[3] >> 6) & 1) == 0) {
+                            warntimes[0]++;
+                            if (warntimes[0] % 10 == 0)
+                                RobotWarn.WarnFlag[RobotWarn.Warn.SMOKEWarn.ordinal()] = false;//警告
+                        }
+                        if (((temp[3] >> 7) & 1) == 0) {
+                            warntimes[1]++;
+                            if (warntimes[1] % 10 == 0)
+                                RobotWarn.WarnFlag[RobotWarn.Warn.GASWarn.ordinal()] = false;//警告
+                        }
+                        switch (temp[1] & 0xFF) {
+                            case 0xC1:
+                                sendflag[CMD.LEFT.ordinal()] = 0;
+                                if (RobotStatus.status != InfoForRobot.STATUS.QUICKSTOP)
+                                    RobotStatus.status = InfoForRobot.STATUS.LEFT;
+                                break;
+                            case 0xC2:
+                                sendflag[CMD.RIGHT.ordinal()] = 0;
+                                if (RobotStatus.status != InfoForRobot.STATUS.QUICKSTOP)
+                                    RobotStatus.status = InfoForRobot.STATUS.RIGHT;
+                                break;
+                            case 0xC3:
+                                sendflag[CMD.STOP.ordinal()] = 0;
+                                if (RobotStatus.status != InfoForRobot.STATUS.QUICKSTOP)
+                                    RobotStatus.status = InfoForRobot.STATUS.STOP;
+                                break;
+                            case 0xC4:
+                                sendflag[CMD.QUICKSTOP.ordinal()] = 0;
+                                if (RobotStatus.status != InfoForRobot.STATUS.QUICKSTOP)
+                                    RobotStatus.status = InfoForRobot.STATUS.QUICKSTOP;
+                                break;
+                            case 0xD4:
+                                RobotStatus.status = InfoForRobot.STATUS.POWEROFF;
+                                break;
+                        }
+                        havedata = true;
                     }
-                    if(((temp[3]>>1)&1)==1){
-                        warntimes[2] = 0;
-                        RobotWarn.WarnFlag[RobotWarn.Warn.POSTUREWarn.ordinal()] = true;//警告
-                        Log.d(TAG,"姿态告警");
-                    }
-                    if(((temp[3]>>2)&1)==1){
-                          warntimes[3] = 0;
-                          RobotWarn.WarnFlag[RobotWarn.Warn.DISTANCEWarn.ordinal()] = true;//警告
-                    }
-                    if(((temp[3]>>3)&1)==1){
-                        warntimes[8] = 0;
-                        RobotWarn.WarnFlag[RobotWarn.Warn.MCUWarn.ordinal()] = true;//警告
-                    }
-                    if(((temp[3]>>4)&1)==1){
-                        warntimes[5] = 0;
-                        RobotWarn.WarnFlag[RobotWarn.Warn.TCPWarn.ordinal()] = true;//警告
-                    }
-                    if(((temp[3]>>5)&1)==1){
-                        warntimes[6] = 0;
-                        RobotWarn.WarnFlag[RobotWarn.Warn.MOTORWarn.ordinal()] = true;//警告
-                    }
-                    if(((temp[3]>>6)&1)==1){
-                        warntimes[0] = 0;
-                        RobotWarn.WarnFlag[RobotWarn.Warn.SMOKEWarn.ordinal()] = true;//警告
-                    }
-                    if(((temp[3]>>7)&1)==1){
-                        warntimes[1] = 0;
-                        RobotWarn.WarnFlag[RobotWarn.Warn.GASWarn.ordinal()] = true;//警告
-                    }
-                    if((temp[3]&1)==0){
-                        warntimes[4]++;
-                        if (warntimes[4] % 10 == 0) RobotWarn.WarnFlag[RobotWarn.Warn.UDPWarn.ordinal()] = false;//警告
-                    }
-                    if(((temp[3]>>1)&1)==0){
-                       warntimes[2]++;
-                        if (warntimes[2] % 10 == 0) RobotWarn.WarnFlag[RobotWarn.Warn.POSTUREWarn.ordinal()] = false;//警告
-                    }
-                    if(((temp[3]>>2)&1)==0){
-                        warntimes[3]++;
-                        if (warntimes[3] % 10 == 0) RobotWarn.WarnFlag[RobotWarn.Warn.DISTANCEWarn.ordinal()] = false;//警告
-                    }
-                    if(((temp[3]>>3)&1)==0){
-                        warntimes[8]++;
-                        if (warntimes[8] % 10 == 0) RobotWarn.WarnFlag[RobotWarn.Warn.MCUWarn.ordinal()] = false;//警告
-                    }
-                    if(((temp[3]>>4)&1)==0){
-                        warntimes[5]++;
-                        if (warntimes[5] % 10 == 0) RobotWarn.WarnFlag[RobotWarn.Warn.TCPWarn.ordinal()] = false;//警告
-                    }
-                    if(((temp[3]>>5)&1)==0){
-                        warntimes[6]++;
-                        if (warntimes[6] % 10 == 0) RobotWarn.WarnFlag[RobotWarn.Warn.MOTORWarn.ordinal()] = false;//警告
-                    }
-                    if(((temp[3]>>6)&1)==0){
-                        warntimes[0]++;
-                        if (warntimes[0] % 10 == 0) RobotWarn.WarnFlag[RobotWarn.Warn.SMOKEWarn.ordinal()] = false;//警告
-                    }
-                    if(((temp[3]>>7)&1)==0){
-                        warntimes[1]++;
-                        if (warntimes[1] % 10 == 0) RobotWarn.WarnFlag[RobotWarn.Warn.GASWarn.ordinal()] = false;//警告
-                    }
-                    switch (temp[1]&0xFF)
-                    {
-                        case 0xC1:
-                            sendflag[CMD.LEFT.ordinal()]=0;
-                            if(RobotStatus.status!= InfoForRobot.STATUS.QUICKSTOP)
-                               RobotStatus.status= InfoForRobot.STATUS.LEFT;
-                            break;
-                        case 0xC2:
-                            sendflag[CMD.RIGHT.ordinal()]=0;
-                            if(RobotStatus.status!= InfoForRobot.STATUS.QUICKSTOP)
-                                RobotStatus.status= InfoForRobot.STATUS.RIGHT;
-                            break;
-                        case 0xC3:
-                            sendflag[CMD.STOP.ordinal()]=0;
-                            if(RobotStatus.status!= InfoForRobot.STATUS.QUICKSTOP)
-                                RobotStatus.status= InfoForRobot.STATUS.STOP;
-                            break;
-                        case 0xC4:
-                            sendflag[CMD.QUICKSTOP.ordinal()]=0;
-                            if(RobotStatus.status!= InfoForRobot.STATUS.QUICKSTOP)
-                                RobotStatus.status= InfoForRobot.STATUS.QUICKSTOP;
-                            break;
-                        case 0xD4: RobotStatus.status= InfoForRobot.STATUS.POWEROFF;break;
-                    }
-                havedata=true;
             } else//发送数据
             {
                 boolean NoHeart=false;
