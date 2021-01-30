@@ -73,7 +73,6 @@ public class InfoForRobot
                     infof1.initMotor(data);
                     break;
                 case 0x71:
-                    Log.d(TAG,"71 ASK");
                     infof4.init(data);
                     break;
                 case 0xC5:
