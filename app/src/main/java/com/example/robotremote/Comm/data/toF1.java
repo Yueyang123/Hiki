@@ -108,7 +108,6 @@ public class toF1 implements Runnable {
                 byte[] temp1=new byte[1];
                 byte[] temp0=new byte[9];
                 byte[] temp=new byte[10];
-                //while (temp1[0]!=0x1A)
                     serialCol.read(temp);
                     if(temp[0]==0x1a) {
                         Log.d(TAG + "RECIVE DATA FROM F1", Integer.toHexString((int) temp[0]) + " " + Integer.toHexString((int) temp[1]));
@@ -268,6 +267,7 @@ public class toF1 implements Runnable {
                 if(NoHeart==false)
                 {
                     NoHeart=true;
+                    RobotStatus.status= InfoForRobot.STATUS.STOP;
                     sendCMD(head, CMD.HEART);
                     sendflag[CMD.HEART.ordinal()]++;
                     if (sendflag[CMD.HEART.ordinal()] > 3)

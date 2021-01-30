@@ -71,7 +71,7 @@ public class infoForMotor {
             FR=false;
             RobotStatus.status= InfoForRobot.STATUS.RIGHT;
         }
-        if(RobotStatus.infof1.pwmspeed==0)RobotStatus.status= InfoForRobot.STATUS.STOP;
+        if(RobotStatus.infof1.pwmspeed==0) RobotStatus.status= InfoForRobot.STATUS.STOP;
         if(((data>>2)&1)!=0)DRIVER_WARING=true;
         else DRIVER_WARING=false;
         if(((data>>1)&1)!=0)DISTANCE_WARING=true;

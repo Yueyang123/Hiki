@@ -1,5 +1,7 @@
 package com.example.robotremote.Comm.data;
-import com.example.robotremote.Comm.CRC.Crc;
+import android.util.Log;
+
+import com.example.robotremote.Comm.CRC.*;
 
 /**
  * @author yueyang
@@ -71,6 +73,7 @@ public class InfoForRobot
                     infof1.initMotor(data);
                     break;
                 case 0x71:
+                    Log.d(TAG,"71 ASK");
                     infof4.init(data);
                     break;
                 case 0xC5:
@@ -80,7 +83,9 @@ public class InfoForRobot
                     break;
             }
         } else {
-            for (int i = 0; i < data.length; i++) data.daTa[i] = 0;
+                Log.d("CRC WRONG ","WRONG");
+                for (int i=0;i<data.length;i++)
+                data.daTa[i] = 0;
             return;
         }
         if (toF4.net.connectstatus == true && data.daTa[0] != 0) {

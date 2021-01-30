@@ -52,7 +52,10 @@ public class InfoForF4
 
     public void init(dataPacket data)
     {
-        if(data.length!=67)return;
+        if(data.length!=67){
+            Log.d("WRONG LENGTH", Integer.toString( data.length));
+            return;
+        }
         BmsW=(int)data.daTa[0+2];
         BmsV=bytesToInt16(data.daTa,3);
         BmsI=bytesToInt16(data.daTa,5);;
@@ -67,7 +70,7 @@ public class InfoForF4
         totaldistance=bytesToInt16(data.daTa,55+2);
         speed= Math.abs((float)temp-(float)totaldistance)/100;
         speed= (int)data.daTa[57+2];
-        Log.d(TAG,"totaldistance"+Integer.toString((int)totaldistance));
+        Log.d(TAG,Integer.toString( totaldistance));
     }
 
     public void show()
