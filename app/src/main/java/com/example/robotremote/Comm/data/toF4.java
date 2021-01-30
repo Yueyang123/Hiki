@@ -290,21 +290,21 @@ public class toF4 implements Runnable
                         /**
                          * 取消警告
                          * */
-                        if ((temp[1] & 0xFF) != 0x89) {
-                            warntimes[0]++;
-                            if (warntimes[0] % 10 == 0)
-                                RobotWarn.WarnFlag[RobotWarn.Warn.SMOKEWarn.ordinal()] = false;//警告
-                        }
-                        if ((temp[1] & 0xFF) != 0x8A) {
-                            warntimes[1]++;
-                            if (warntimes[1] % 10 == 0)
-                                RobotWarn.WarnFlag[RobotWarn.Warn.GASWarn.ordinal()] = false;//警告
-                        }
-                        if ((temp[1] & 0xFF) != 0x83) {
-                            warntimes[2]++;
-                            if (warntimes[2] % 10 == 0)
-                                RobotWarn.WarnFlag[RobotWarn.Warn.POSTUREWarn.ordinal()] = false;//警告
-                        }
+//                        if ((temp[1] & 0xFF) != 0x89) {
+//                            warntimes[0]++;
+//                            if (warntimes[0] % 10 == 0)
+//                                RobotWarn.WarnFlag[RobotWarn.Warn.SMOKEWarn.ordinal()] = false;//警告
+//                        }
+//                        if ((temp[1] & 0xFF) != 0x8A) {
+//                            warntimes[1]++;
+//                            if (warntimes[1] % 10 == 0)
+//                                RobotWarn.WarnFlag[RobotWarn.Warn.GASWarn.ordinal()] = false;//警告
+//                        }
+//                        if ((temp[1] & 0xFF) != 0x83) {
+//                            warntimes[2]++;
+//                            if (warntimes[2] % 10 == 0)
+//                                RobotWarn.WarnFlag[RobotWarn.Warn.POSTUREWarn.ordinal()] = false;//警告
+//                        }
                         if ((temp[1] & 0xFF) != 0x84) {
                             warntimes[3]++;
                             if (warntimes[3] % 10 == 0){

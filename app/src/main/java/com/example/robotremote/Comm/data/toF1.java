@@ -151,15 +151,11 @@ public class toF1 implements Runnable {
                             warntimes[1] = 0;
                             RobotWarn.WarnFlag[RobotWarn.Warn.GASWarn.ordinal()] = true;//警告
                         }
+
                         if ((temp[3] & 1) == 0) {
                             warntimes[4]++;
                             if (warntimes[4] % 10 == 0)
                                 RobotWarn.WarnFlag[RobotWarn.Warn.UDPWarn.ordinal()] = false;//警告
-                        }
-                        if (((temp[3] >> 1) & 1) == 0) {
-                            warntimes[2]++;
-                            if (warntimes[2] % 10 == 0)
-                                RobotWarn.WarnFlag[RobotWarn.Warn.POSTUREWarn.ordinal()] = false;//警告
                         }
                         if (((temp[3] >> 2) & 1) == 0) {
                             warntimes[3]++;
@@ -181,16 +177,21 @@ public class toF1 implements Runnable {
                             if (warntimes[6] % 10 == 0)
                                 RobotWarn.WarnFlag[RobotWarn.Warn.MOTORWarn.ordinal()] = false;//警告
                         }
-                        if (((temp[3] >> 6) & 1) == 0) {
-                            warntimes[0]++;
-                            if (warntimes[0] % 10 == 0)
-                                RobotWarn.WarnFlag[RobotWarn.Warn.SMOKEWarn.ordinal()] = false;//警告
-                        }
-                        if (((temp[3] >> 7) & 1) == 0) {
-                            warntimes[1]++;
-                            if (warntimes[1] % 10 == 0)
-                                RobotWarn.WarnFlag[RobotWarn.Warn.GASWarn.ordinal()] = false;//警告
-                        }
+//                        if (((temp[3] >> 6) & 1) == 0) {
+//                            warntimes[0]++;
+//                            if (warntimes[0] % 10 == 0)
+//                                RobotWarn.WarnFlag[RobotWarn.Warn.SMOKEWarn.ordinal()] = false;//警告
+//                        }
+//                        if (((temp[3] >> 7) & 1) == 0) {
+//                            warntimes[1]++;
+//                            if (warntimes[1] % 10 == 0)
+//                                RobotWarn.WarnFlag[RobotWarn.Warn.GASWarn.ordinal()] = false;//警告
+//                        }
+//                        if (((temp[3] >> 1) & 1) == 0) {
+//                            warntimes[2]++;
+//                            if (warntimes[2] % 10 == 0)
+//                                RobotWarn.WarnFlag[RobotWarn.Warn.POSTUREWarn.ordinal()] = false;//警告
+//                        }
                         switch (temp[1] & 0xFF) {
                             case 0xC1:
                                 sendflag[CMD.LEFT.ordinal()] = 0;
