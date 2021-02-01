@@ -83,8 +83,10 @@ public class InfoForRobot
             }
         } else {
                 Log.d("CRC WRONG ","WRONG");
-                for (int i=0;i<data.length;i++)
-                data.daTa[i] = 0;
+                for (int i=0;i<data.length;i++) {
+                    Log.d("CRC DATA[]"+i,Integer.toHexString( data.daTa[i]));
+                    data.daTa[i] = 0;
+                }
             return;
         }
         if (toF4.net.connectstatus == true && data.daTa[0] != 0) {
