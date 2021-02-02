@@ -139,11 +139,12 @@ public class toF4 implements Runnable
             if (Dir == dir.F42REMOTE) {//接受环节
                 byte[] temp=new byte[2];
                 net.read(temp);
-                if(temp[0]==0x4A) {
+                if(temp[0]==0x4A&&RobotStatus.data.busy==false) {
                     Log.d(TAG+"RECIVE DATA FROM F4",Integer.toHexString((int) temp[0])+" "+Integer.toHexString((int) temp[1]));
                     tof4Timeout=10000;//更新timeout
                     RobotStatus.data.daTa[0]=temp[0];
                     RobotStatus.data.daTa[1]=temp[1];
+                    RobotStatus.data.busy=true;
                         byte[] temp1;
                         switch (temp[1]&0xFF)
                         {
@@ -159,7 +160,6 @@ public class toF4 implements Runnable
                                 sendflag[CMD.RIGHT.ordinal()]=0;
                                 sendflag[CMD.STOP.ordinal()]=0;
                                 sendflag[CMD.QUICKSTOP.ordinal()] = 0;
-                                RobotStatus.processRobotData();
                                 break;
                             case 0xC5:
                                 sendflag[4]=0;
@@ -170,7 +170,6 @@ public class toF4 implements Runnable
                                 for(int i=0;i<temp1.length;i++)
                                     RobotStatus.data.daTa[i+2]=temp1[i];
                                 RobotStatus.data.length=8;
-                                RobotStatus.processRobotData();
                                 break;
                             case 0xD0:
                                 temp1=new byte[7];
@@ -189,7 +188,6 @@ public class toF4 implements Runnable
                                 for(int i=0;i<temp1.length;i++)
                                     RobotStatus.data.daTa[i+2]=temp1[i];
                                 RobotStatus.data.length=20;
-                                RobotStatus.processRobotData();
                                 break;
                             case 0x71:
                                 sendflag[11]=0;
@@ -201,7 +199,6 @@ public class toF4 implements Runnable
                                 for(int i=0;i<temp1.length;i++)
                                     RobotStatus.data.daTa[i+2]=temp1[i];
                                 RobotStatus.data.length=67;
-                                RobotStatus.processRobotData();
                                 break;
                             case 0xE3:
                                 temp1=new byte[6];
@@ -212,7 +209,6 @@ public class toF4 implements Runnable
                                 for(int i=0;i<temp1.length;i++)
                                     RobotStatus.data.daTa[i+2]=temp1[i];
                                 RobotStatus.data.length=8;
-                                RobotStatus.processRobotData();
                                 break;
                             case 0x89:
                                 temp1=new byte[2];
@@ -337,8 +333,8 @@ public class toF4 implements Runnable
                             if (warntimes[8] % 10 == 0)
                                 RobotWarn.WarnFlag[RobotWarn.Warn.MCUWarn.ordinal()] = false;
                         }
-
                     havedata=true;
+                    RobotStatus.processRobotData();
                 }
             }else//发送环节
             {

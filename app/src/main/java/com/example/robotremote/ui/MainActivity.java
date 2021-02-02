@@ -264,8 +264,8 @@ public class MainActivity extends Activity {
                 if(Heart%1000==0) {//烟雾告警
                     new Thread(new Runnable() {
                         @Override
-                        public void run() {
-                            Message message = new Message();
+                        public void run() {Message message = new Message();
+
                             message.what = 0x05;
                             handler.sendMessage(message);
                         }

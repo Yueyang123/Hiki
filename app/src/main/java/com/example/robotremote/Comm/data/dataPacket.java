@@ -9,4 +9,5 @@ package com.example.robotremote.Comm.data;
 public class dataPacket {
     public byte[] daTa = new byte[80];//数据
     public int length;//数据的长度
+    public boolean busy=false;//数据正在使用的标志
 }

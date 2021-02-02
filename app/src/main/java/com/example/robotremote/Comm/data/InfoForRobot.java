@@ -36,6 +36,7 @@ public class InfoForRobot
     public void processRobotData()
     {
         int crc = Crc.crc16(data.daTa, data.length - 2);
+        data.busy=false;
         if (data.daTa[data.length - 1] == (byte) (crc >> 8 & 0xFF) && data.daTa[data.length - 2] == (byte) (crc >> 0 & 0xFF)) {
             switch ((int)data.daTa[1]&0xFF)
             {
