@@ -231,9 +231,6 @@ public class MainActivity extends Activity {
                 case 0x06:
                     Smoke.setColorFilter(grayColorFilter);
                     break;
-                case 0x07:
-                    setGuideBar(true);
-                    break;
 
                 default:
                     break;
@@ -251,16 +248,6 @@ public class MainActivity extends Activity {
             while (true)
             {
                 Heart++;//逻辑子线程心跳包
-                if(Heart%3000==0) {//隐藏导航栏
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Message message = new Message();
-                            message.what = 0x07;
-                            handler.sendMessage(message);
-                        }
-                    }).start();
-                }
                 if(Heart%1000==0) {//烟雾告警
                     new Thread(new Runnable() {
                         @Override

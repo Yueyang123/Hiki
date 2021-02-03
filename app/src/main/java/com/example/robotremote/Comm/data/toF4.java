@@ -139,7 +139,7 @@ public class toF4 implements Runnable
             if (Dir == dir.F42REMOTE) {//接受环节
                 byte[] temp=new byte[2];
                 net.read(temp);
-                if(temp[0]==0x4A&&RobotStatus.data.busy==false) {
+                if((temp[0]&0xFF)==0x4A&(temp[1]&0xFF)!=0x81&&RobotStatus.data.busy==false) {
                     Log.d(TAG+"RECIVE DATA FROM F4",Integer.toHexString((int) temp[0])+" "+Integer.toHexString((int) temp[1]));
                     tof4Timeout=10000;//更新timeout
                     RobotStatus.data.daTa[0]=temp[0];
@@ -241,6 +241,12 @@ public class toF4 implements Runnable
                                 RobotStatus.data.length=4;
                                 warntimes[3] = 0;
                                 RobotWarn.WarnFlag[RobotWarn.Warn.DISTANCEWarn.ordinal()] = true;//警告
+                                break;
+                            case 0x81:
+                                temp1=new byte[2];
+                                net.read(temp1);
+                                for(int i=0;i<temp1.length;i++) RobotStatus.data.daTa[i+2]=temp1[i];
+                                RobotStatus.data.length=4;
                                 break;
                             case 0x82:
                                 temp1=new byte[2];
