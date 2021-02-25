@@ -1,5 +1,7 @@
 package com.example.robotremote.Comm.data;
+
 import android.util.Log;
+
 /**
  * @author yueyang
  * @version V1.0
@@ -20,18 +22,18 @@ import android.util.Log;
 public class InfoForF1
 {
     final String TAG="F1DATA";
-    int ax;
-    int ay;
-    int az;
-    int atherax;
-    int atheray;
-    int atheraz;
-    int therax;
-    int theray;
-    int theraz;
-    int fordistance;
-    public float pwmspeed;
-    public infoForMotor infomotor=new infoForMotor((byte) 0);
+    static int ax;
+    static int ay;
+    static int az;
+    static int atherax;
+    static int atheray;
+    static int atheraz;
+    static int therax;
+    static int theray;
+    static int theraz;
+    static int fordistance;
+    public static float pwmspeed;
+    public static infoForMotor infomotor=new infoForMotor((byte) 0);
     /**
      * F1 20位数据包初始化
      * */

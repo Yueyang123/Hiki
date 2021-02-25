@@ -1,19 +1,12 @@
 package com.example.robotremote.Hardware.Key;
 
 import android.util.Log;
-
-import com.example.robotremote.Comm.Warn.RobotWarn;
 import com.example.robotremote.Comm.data.InfoForRobot;
 import com.example.robotremote.Comm.data.toF1;
 import com.example.robotremote.Comm.data.toF4;
-import com.example.robotremote.HIKIVideo.Audio;
-import com.example.robotremote.Hardware.Adc.Adc;
 import com.example.robotremote.Hardware.Beep.Beep;
 import com.example.robotremote.Hardware.Gpio.GpioCol;
 import com.example.robotremote.ui.MainActivity;
-
-import static com.example.robotremote.Comm.data.toF4.RobotStatus;
-import static com.example.robotremote.Comm.data.toF4.sendflag;
 
 /**
  * @author yueyang
@@ -78,7 +71,7 @@ public class KeyCol implements Runnable{
                 toF4.sendflag[toF4.CMD.QUICKSTOP.ordinal()]=0;
                 toF1.sendflag[toF1.CMD.QUICKSTOP.ordinal()]=0;
             }//急停
-            if(RobotStatus.status != InfoForRobot.STATUS.STOP&&RobotStatus.status != InfoForRobot.STATUS.QUICKSTOP&&RobotStatus.status != InfoForRobot.STATUS.MODE1) {
+            if(InfoForRobot.status != InfoForRobot.STATUS.STOP&&InfoForRobot.status != InfoForRobot.STATUS.QUICKSTOP&&InfoForRobot.status != InfoForRobot.STATUS.MODE1) {
                 if (SWStatus[SWKind.SPEEDKey1.ordinal()] == 1 && SWStatus[SWKind.SPEEDKey2.ordinal()] == 1) {
                     toF4.sendflag[toF4.CMD.SPEED.ordinal()] = 2;//调速命令
                     toF1.sendflag[toF1.CMD.SPEED.ordinal()] = 2;

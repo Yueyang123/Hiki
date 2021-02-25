@@ -1,9 +1,6 @@
 package com.example.robotremote.Comm.data;
 import android.util.Log;
 
-import com.example.robotremote.Comm.Warn.RobotWarn;
-
-import static com.example.robotremote.Comm.data.toF4.RobotStatus;
 /**
  * @author yueyang
  * @version V1.0
@@ -59,19 +56,19 @@ public class infoForMotor {
         else EN=false;
 
         int temp=(data>>3)&3;
-        if(temp==3) RobotStatus.infof1.pwmspeed=100;
-        else if(temp==2) RobotStatus.infof1.pwmspeed=50;
-        else if(temp==1) RobotStatus.infof1.pwmspeed=10;
-        else if(temp==0) RobotStatus.infof1.pwmspeed=0;
-        if(((data>>5)&1)!=0&&RobotStatus.status!=InfoForRobot.STATUS.QUICKSTOP){
+        if(temp==3) InfoForRobot.infof1.pwmspeed=100;
+        else if(temp==2) InfoForRobot.infof1.pwmspeed=50;
+        else if(temp==1) InfoForRobot.infof1.pwmspeed=10;
+        else if(temp==0) InfoForRobot.infof1.pwmspeed=0;
+        if(((data>>5)&1)!=0&&InfoForRobot.status!=InfoForRobot.STATUS.QUICKSTOP){
             FR=true;
-            RobotStatus.status= InfoForRobot.STATUS.LEFT;
+            InfoForRobot.status= InfoForRobot.STATUS.LEFT;
         }
-        if(((data>>5)&1)==0&&RobotStatus.status!=InfoForRobot.STATUS.QUICKSTOP) {
+        if(((data>>5)&1)==0&&InfoForRobot.status!=InfoForRobot.STATUS.QUICKSTOP) {
             FR=false;
-            RobotStatus.status= InfoForRobot.STATUS.RIGHT;
+            InfoForRobot.status= InfoForRobot.STATUS.RIGHT;
         }
-        if(RobotStatus.infof1.pwmspeed==0) RobotStatus.status= InfoForRobot.STATUS.STOP;
+        if(InfoForRobot.infof1.pwmspeed==0) InfoForRobot.status= InfoForRobot.STATUS.STOP;
         if(((data>>2)&1)!=0)DRIVER_WARING=true;
         else DRIVER_WARING=false;
         if(((data>>1)&1)!=0)DISTANCE_WARING=true;
@@ -85,7 +82,7 @@ public class infoForMotor {
         Log.d(TAG,"BK: "+BK);
         Log.d(TAG,"EN: "+EN);
         Log.d(TAG,"FR: "+FR);
-        Log.d(TAG,"speed: "+RobotStatus.infof1.pwmspeed);
+        Log.d(TAG,"speed: "+InfoForRobot.infof1.pwmspeed);
         Log.d(TAG,"DRIVER_WARING: "+DRIVER_WARING);
         Log.d(TAG,"DISTANCE_WARING: "+DISTANCE_WARING);
         Log.d(TAG,"PID: "+PID);

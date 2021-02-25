@@ -4,10 +4,7 @@ import com.example.robotremote.Comm.Warn.RobotWarn;
 import com.example.robotremote.Hardware.Serial.*;
 import com.example.robotremote.Comm.CRC.*;
 import java.util.Calendar;
-import java.util.LinkedList;
-import java.util.Queue;
 
-import static com.example.robotremote.Comm.data.toF4.RobotStatus;
 /**
  * @author yueyang
  * @version V1.0
@@ -28,8 +25,8 @@ public class toF1 implements Runnable {
     final String TAG = "TOF1";
     public SerialCol serialCol;
     public dir Dir = dir.F12REMOTE;
-    InfoForRobot RobotStatus;
     public boolean havedata = false;
+    private dataPacket f1data=new dataPacket();
     public static int[] sendflag = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};//发送位，如果要发将那一位置一
 
     public enum CMD {
@@ -66,7 +63,6 @@ public class toF1 implements Runnable {
 
     public toF1(SerialCol serialCol, dir Dir) {
         this.serialCol = serialCol;
-        this.RobotStatus = toF4.RobotStatus;
         this.Dir = Dir;
     }
 
@@ -84,7 +80,7 @@ public class toF1 implements Runnable {
         tcmd[0] = (cmd[Cmdtof1.ordinal()][0]);
         tcmd[1] = (cmd[Cmdtof1.ordinal()][1]);
         byte pwmspeed=0;
-        if (sendflag[CMD.SPEED.ordinal()] ==0||RobotStatus.status==InfoForRobot.STATUS.QUICKSTOP||RobotStatus.status==InfoForRobot.STATUS.STOP)pwmspeed=0;
+        if (sendflag[CMD.SPEED.ordinal()] ==0||InfoForRobot.status==InfoForRobot.STATUS.QUICKSTOP||InfoForRobot.status==InfoForRobot.STATUS.STOP)pwmspeed=0;
         else if (sendflag[CMD.SPEED.ordinal()] == 1)pwmspeed=10;
         else if (sendflag[CMD.SPEED.ordinal()] == 2)pwmspeed=50;
         else if (sendflag[CMD.SPEED.ordinal()] == 3)pwmspeed=100;
@@ -111,12 +107,12 @@ public class toF1 implements Runnable {
                         Log.d(TAG + "RECIVE DATA FROM F1", Integer.toHexString((int) temp[0]) + " " + Integer.toHexString((int) temp[1]));
                         RobotWarn.WarnFlag[RobotWarn.Warn.LORAWarn.ordinal()] = false;
                         tof1Timeout = 10000;
-                        for (int i = 0; i < temp.length; i++) RobotStatus.data.daTa[i] = temp[i];
-                        RobotStatus.data.length = 10;
-                        RobotStatus.infof1.infomotor.set(temp[2]);
+                        for (int i = 0; i < temp.length; i++) f1data.daTa[i] = temp[i];
+                        f1data.length = 10;
+                        InfoForRobot.infof1.infomotor.set(temp[2]);
 
-                        int crc = Crc.crc16(RobotStatus.data.daTa, RobotStatus.data.length - 2);
-                        if (RobotStatus.data.daTa[RobotStatus.data.length - 1] == (byte) (crc >> 8 & 0xFF) && RobotStatus.data.daTa[RobotStatus.data.length - 2] == (byte) (crc >> 0 & 0xFF)) {
+                        int crc = Crc.crc16(f1data.daTa, f1data.length - 2);
+                        if (f1data.daTa[f1data.length - 1] == (byte) (crc >> 8 & 0xFF) && f1data.daTa[f1data.length - 2] == (byte) (crc >> 0 & 0xFF)) {
                             /**
                              * 更新相应警告
                              * */
@@ -178,52 +174,36 @@ public class toF1 implements Runnable {
                                 if (warntimes[6] % 10 == 0)
                                     RobotWarn.WarnFlag[RobotWarn.Warn.MOTORWarn.ordinal()] = false;//警告
                             }
-//                        if (((temp[3] >> 6) & 1) == 0) {
-//                            warntimes[0]++;
-//                            if (warntimes[0] % 10 == 0)
-//                                RobotWarn.WarnFlag[RobotWarn.Warn.SMOKEWarn.ordinal()] = false;//警告
-//                        }
-//                        if (((temp[3] >> 7) & 1) == 0) {
-//                            warntimes[1]++;
-//                            if (warntimes[1] % 10 == 0)
-//                                RobotWarn.WarnFlag[RobotWarn.Warn.GASWarn.ordinal()] = false;//警告
-//                        }
-//                        if (((temp[3] >> 1) & 1) == 0) {
-//                            warntimes[2]++;
-//                            if (warntimes[2] % 10 == 0)
-//                                RobotWarn.WarnFlag[RobotWarn.Warn.POSTUREWarn.ordinal()] = false;//警告
-//                        }
                             switch (temp[1] & 0xFF) {
                                 case 0xC1:
                                     sendflag[CMD.LEFT.ordinal()] = 0;
-                                    if (RobotStatus.status != InfoForRobot.STATUS.QUICKSTOP)
-                                        RobotStatus.status = InfoForRobot.STATUS.LEFT;
+                                    if (InfoForRobot.status != InfoForRobot.STATUS.QUICKSTOP)
+                                        InfoForRobot.status = InfoForRobot.STATUS.LEFT;
                                     break;
                                 case 0xC2:
                                     sendflag[CMD.RIGHT.ordinal()] = 0;
-                                    if (RobotStatus.status != InfoForRobot.STATUS.QUICKSTOP)
-                                        RobotStatus.status = InfoForRobot.STATUS.RIGHT;
+                                    if (InfoForRobot.status != InfoForRobot.STATUS.QUICKSTOP)
+                                        InfoForRobot.status = InfoForRobot.STATUS.RIGHT;
                                     break;
                                 case 0xC3:
                                     sendflag[CMD.STOP.ordinal()] = 0;
-                                    if (RobotStatus.status != InfoForRobot.STATUS.QUICKSTOP)
-                                        RobotStatus.status = InfoForRobot.STATUS.STOP;
+                                    if (InfoForRobot.status != InfoForRobot.STATUS.QUICKSTOP)
+                                        InfoForRobot.status = InfoForRobot.STATUS.STOP;
                                     break;
                                 case 0xC4:
                                     sendflag[CMD.QUICKSTOP.ordinal()] = 0;
-                                    if (RobotStatus.status != InfoForRobot.STATUS.QUICKSTOP)
-                                        RobotStatus.status = InfoForRobot.STATUS.QUICKSTOP;
+                                    if (InfoForRobot.status != InfoForRobot.STATUS.QUICKSTOP)
+                                        InfoForRobot.status = InfoForRobot.STATUS.QUICKSTOP;
                                     break;
                                 case 0xD4:
-                                    RobotStatus.status = InfoForRobot.STATUS.POWEROFF;
+                                    InfoForRobot.status = InfoForRobot.STATUS.POWEROFF;
                                     break;
                             }
                             havedata = true;
                         }
                     }else {
                         Log.d("CRC WRONG ","WRONG");
-                        for (int i=0;i<RobotStatus.data.length;i++)
-                            RobotStatus.data.daTa[i] = 0;
+                        for (int i=0;i<f1data.length;i++) f1data.daTa[i] = 0;
                     }
             } else//发送数据
             {
@@ -259,7 +239,7 @@ public class toF1 implements Runnable {
                 if (sendflag[CMD.STOP.ordinal()] != 0&&NoHeart==false) {//一种发送命令C3
                     NoHeart=true;
                     sendCMD(head, CMD.STOP);
-                    RobotStatus.infof1.pwmspeed = 0;
+                    InfoForRobot.infof1.pwmspeed = 0;
                     sendflag[CMD.STOP.ordinal()]++;
                     if (sendflag[CMD.STOP.ordinal()] > 5)
                         sendflag[CMD.STOP.ordinal()] = 0;//超过五次不再发送
@@ -274,7 +254,7 @@ public class toF1 implements Runnable {
                 if(NoHeart==false)
                 {
                     NoHeart=true;
-                    RobotStatus.status= InfoForRobot.STATUS.STOP;
+                    InfoForRobot.status= InfoForRobot.STATUS.STOP;
                     sendCMD(head, CMD.HEART);
                     sendflag[CMD.HEART.ordinal()]++;
                     if (sendflag[CMD.HEART.ordinal()] > 3)

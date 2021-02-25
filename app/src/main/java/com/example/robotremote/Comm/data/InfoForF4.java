@@ -1,11 +1,12 @@
 package com.example.robotremote.Comm.data;
 
 import android.util.Log;
+
 /**
  * @author yueyang
  * @version V1.0
  * @describation
- *  与F4通讯，64位数据包
+ *  与F4通讯，67位数据包
  *   BMS总电量
  *   BMS总电压
  *   BMS总电流
@@ -22,26 +23,23 @@ import android.util.Log;
 public class InfoForF4
 {
     final String TAG="F4DATA";
-    public int BmsW;
-    public int BmsV;
-    public int BmsI;
-    public int[] Bmst=new int[15];
-    public int[] BmscoreV=new int[15];
-    public int SenseS;
-    public int SenseT;
-    public int Gas;
-    public int totaldistance;
-    public float speed;
+    public static int BmsW;
+    public static int BmsV;
+    public static int BmsI;
+    public static int[] Bmst=new int[15];
+    public static int[] BmscoreV=new int[15];
+    public static int SenseS;
+    public static int SenseT;
+    public static int Gas;
+    public static int totaldistance;
+    public static float speed;
     /**
      * byte数组中取int数值，本方法适用于(低位在前，高位在后)的顺序，和和intToBytes（）配套使用
-     *
-     * @param src
-     *            byte数组
-     * @param offset
-     *            从数组的第offset位开始
+     * @param src     byte数组
+     * @param offset 从数组的第offset位开始
      * @return int数值
      */
-    public static int bytesToInt16(byte[] src, int offset) {
+    public int bytesToInt16(byte[] src, int offset) {
         int value;
         value = (int) ((src[offset+1] & 0xFF)
                 | ((src[offset] & 0xFF)<<8)
@@ -70,7 +68,7 @@ public class InfoForF4
         totaldistance=bytesToInt16(data.daTa,55+2);
         speed= Math.abs((float)temp-(float)totaldistance)/100;
         speed= (int)data.daTa[57+2];
-       // Log.d(TAG,Integer.toString( totaldistance));
+        // Log.d(TAG,Integer.toString( totaldistance));
     }
 
     public void show()

@@ -39,7 +39,6 @@ import com.example.robotremote.Comm.data.toF4;
 import com.example.robotremote.Comm.data.toF1;
 import com.hikvision.netsdk.HCNetSDK;
 import com.hikvision.netsdk.PTZCommand;
-import static com.example.robotremote.Comm.data.toF4.RobotStatus;
 
 /**
  * @author yueyang
@@ -144,9 +143,9 @@ public class MainActivity extends Activity {
             super.handleMessage(msg);
             switch (msg.what){
                 case 0x00://更新UI
-                    String gasstr="瓦斯:"+ RobotStatus.infof4.Gas;
+                    String gasstr="瓦斯:"+ InfoForRobot.infof4.Gas;
                     String statusstr;
-                    switch (RobotStatus.status)
+                    switch (InfoForRobot.status)
                     {
                         case MODE2:
                             statusstr="状态:"+"跟机";
@@ -158,7 +157,7 @@ public class MainActivity extends Activity {
                             statusstr="状态:"+"遥控";
                             break;
                     }
-                    String carspeed="车速:"+ RobotStatus.infof4.speed+"m/s";
+                    String carspeed="车速:"+ InfoForRobot.infof4.speed+"m/s";
                     /**
                      * 更新字符显示
                      * */
@@ -175,11 +174,11 @@ public class MainActivity extends Activity {
                     /**
                      * 更新方向图标
                      * */
-                    if(RobotStatus.status== InfoForRobot.STATUS.RIGHT){
+                    if(InfoForRobot.status== InfoForRobot.STATUS.RIGHT){
                         dir.setImageBitmap(b_dir);
                         dir.setRotation(0);
                     }
-                    else if(RobotStatus.status== InfoForRobot.STATUS.LEFT){
+                    else if(InfoForRobot.status== InfoForRobot.STATUS.LEFT){
                         dir.setImageBitmap(b_dir);
                         dir.setRotation(180);
                     }
@@ -362,10 +361,10 @@ public class MainActivity extends Activity {
                     f4toremote.havedata=false;
                 }
                 //更新机器人位置的Progressbar
-                if(RobotStatus.infof4.totaldistance/100<=50&& RobotStatus.infof4.totaldistance/100>=0)
-                Robotwhere=(RobotStatus.infof4.totaldistance/100)%51;
-                else if(RobotStatus.infof4.totaldistance/100>50&& RobotStatus.infof4.totaldistance/100<100) Robotwhere=50;
-                else if(RobotStatus.infof4.totaldistance/100>1000) Robotwhere=0;
+                if(InfoForRobot.infof4.totaldistance/100<=50&& InfoForRobot.infof4.totaldistance/100>=0)
+                Robotwhere=(InfoForRobot.infof4.totaldistance/100)%51;
+                else if(InfoForRobot.infof4.totaldistance/100>50&& InfoForRobot.infof4.totaldistance/100<100) Robotwhere=50;
+                else if(InfoForRobot.infof4.totaldistance/100>1000) Robotwhere=0;
                 //REFRESH PROGRESSBAR
                 new Thread(new Runnable() {
                     @Override

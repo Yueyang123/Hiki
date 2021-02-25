@@ -17,7 +17,7 @@ public class toF4 implements Runnable
     final String TAG="TOF4";
     public static NetCol net;
     public dir Dir=dir.F42REMOTE;
-    public static InfoForRobot RobotStatus=new InfoForRobot();
+    private dataPacket f4data=new dataPacket();
     public boolean havedata=false;//通讯控制器向UI进行更新
     public static int tof4Timeout=0;//链接超时
     public static int[] sendflag={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};//发送位，如果要发将那一位置一
@@ -128,6 +128,69 @@ public class toF4 implements Runnable
         for(int i=0;i<13;i++)
             sendflag[i]=0;
     }
+    /**
+     * F4数据处理
+     */
+    public void processRobotData()
+    {
+        int crc = Crc.crc16(f4data.daTa, f4data.length - 2);
+        if (f4data.length>0&&f4data.length<80&&f4data.daTa[f4data.length - 1] == (byte) (crc >> 8 & 0xFF) && f4data.daTa[f4data.length - 2] == (byte) (crc >> 0 & 0xFF)) {
+            switch ((int)f4data.daTa[1]&0xFF)
+            {
+                case 0xC1:
+                    InfoForRobot.status= InfoForRobot.STATUS.LEFT;
+                    break;
+                case 0xC2:
+                    InfoForRobot.status= InfoForRobot.STATUS.RIGHT;
+                    break;
+                case 0xC3:
+                    InfoForRobot.status= InfoForRobot.STATUS.STOP;
+                    break;
+                case 0xC4:
+                    InfoForRobot.status= InfoForRobot.STATUS.QUICKSTOP;
+                    break;
+                case 0xD1:
+                    if(InfoForRobot.status!= InfoForRobot.STATUS.QUICKSTOP)
+                        InfoForRobot.status= InfoForRobot.STATUS.MODE1;
+                    break;
+                case 0xD2:
+                    if(InfoForRobot.status!= InfoForRobot.STATUS.QUICKSTOP)
+                        InfoForRobot.status= InfoForRobot.STATUS.MODE2;
+                    break;
+                case 0xD3:
+                    if(InfoForRobot.status!= InfoForRobot.STATUS.QUICKSTOP)
+                        InfoForRobot.status= InfoForRobot.STATUS.MODE3;
+                    break;
+                case 0xD4:
+                    InfoForRobot.status= InfoForRobot.STATUS.POWEROFF;
+                    break;
+                case 0xE2:
+                    InfoForRobot.infof1.init(f4data);
+                    break;
+                case 0xE3:
+                    InfoForRobot.infof1.initMotor(f4data);
+                    break;
+                case 0x71:
+                    InfoForRobot.infof4.init(f4data);
+                    break;
+                case 0xC5:
+                    InfoForRobot.infof1.initSpeed(f4data);
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            Log.d("CRC WRONG ","WRONG");
+            for (int i=0;i<f4data.length;i++) {
+                Log.d("CRC DATA["+i+"]",Integer.toHexString( f4data.daTa[i]));
+                f4data.daTa[i] = 0;
+            }
+            return;
+        }
+        if (net.connectstatus == true && f4data.daTa[0] != 0) {
+            for (int i = 0; i < f4data.length; i++) f4data.daTa[i] = 0;
+        }
+    }
 
     public void run()
     {
@@ -139,12 +202,11 @@ public class toF4 implements Runnable
             if (Dir == dir.F42REMOTE) {//接受环节
                 byte[] temp=new byte[2];
                 net.read(temp);
-                if((temp[0]&0xFF)==0x4A&(temp[1]&0xFF)!=0x81&&RobotStatus.data.busy==false) {
+                if((temp[0]&0xFF)==0x4A&(temp[1]&0xFF)!=0x81) {
                     Log.d(TAG+"RECIVE DATA FROM F4",Integer.toHexString((int) temp[0])+" "+Integer.toHexString((int) temp[1]));
                     tof4Timeout=10000;//更新timeout
-                    RobotStatus.data.daTa[0]=temp[0];
-                    RobotStatus.data.daTa[1]=temp[1];
-                    RobotStatus.data.busy=true;
+                    f4data.daTa[0]=temp[0];
+                    f4data.daTa[1]=temp[1];
                         byte[] temp1;
                         switch (temp[1]&0xFF)
                         {
@@ -154,8 +216,8 @@ public class toF4 implements Runnable
                             case 0xC4:
                                 temp1=new byte[5];
                                 net.read(temp1);
-                                for(int i=0;i<temp1.length;i++) RobotStatus.data.daTa[i+2]=temp1[i];
-                                RobotStatus.data.length=7;
+                                for(int i=0;i<temp1.length;i++) f4data.daTa[i+2]=temp1[i];
+                                f4data.length=7;
                                 sendflag[CMD.LEFT.ordinal()]=0;
                                 sendflag[CMD.RIGHT.ordinal()]=0;
                                 sendflag[CMD.STOP.ordinal()]=0;
@@ -165,126 +227,121 @@ public class toF4 implements Runnable
                                 sendflag[4]=0;
                                 temp1=new byte[6];
                                 net.read(temp1);
-                                RobotStatus.data.daTa[0]=temp[0];
-                                RobotStatus.data.daTa[1]=temp[1];
-                                for(int i=0;i<temp1.length;i++)
-                                    RobotStatus.data.daTa[i+2]=temp1[i];
-                                RobotStatus.data.length=8;
+                                f4data.daTa[0]=temp[0];
+                                f4data.daTa[1]=temp[1];
+                                for(int i=0;i<temp1.length;i++) f4data.daTa[i+2]=temp1[i];
+                                f4data.length=8;
                                 break;
                             case 0xD0:
                                 temp1=new byte[7];
                                 net.read(temp1);
-                                RobotStatus.data.daTa[0]=temp[0];
-                                RobotStatus.data.daTa[1]=temp[1];
-                                for(int i=0;i<temp1.length;i++)
-                                    RobotStatus.data.daTa[i+2]=temp1[i];
-                                RobotStatus.data.length=9;
+                                f4data.daTa[0]=temp[0];
+                                f4data.daTa[1]=temp[1];
+                                for(int i=0;i<temp1.length;i++) f4data.daTa[i+2]=temp1[i];
+                                f4data.length=9;
                                 break;
                             case 0xE2:
                                 temp1=new byte[18];
                                 net.read(temp1);
-                                RobotStatus.data.daTa[0]=temp[0];
-                                RobotStatus.data.daTa[1]=temp[1];
-                                for(int i=0;i<temp1.length;i++)
-                                    RobotStatus.data.daTa[i+2]=temp1[i];
-                                RobotStatus.data.length=20;
+                                f4data.daTa[0]=temp[0];
+                                f4data.daTa[1]=temp[1];
+                                for(int i=0;i<temp1.length;i++) f4data.daTa[i+2]=temp1[i];
+                                f4data.length=20;
                                 break;
                             case 0x71:
                                 sendflag[11]=0;
                                 RobotWarn.WarnFlag[RobotWarn.Warn.WIFIWarn.ordinal()]=false;
                                 temp1=new byte[65];
                                 net.read(temp1);
-                                RobotStatus.data.daTa[0]=temp[0];
-                                RobotStatus.data.daTa[1]=temp[1];
-                                for(int i=0;i<temp1.length;i++)
-                                    RobotStatus.data.daTa[i+2]=temp1[i];
-                                RobotStatus.data.length=67;
+                                f4data.daTa[0]=temp[0];
+                                f4data.daTa[1]=temp[1];
+                                for(int i=0;i<temp1.length;i++) f4data.daTa[i+2]=temp1[i];
+                                f4data.length=67;
                                 break;
                             case 0xE3:
                                 temp1=new byte[6];
                                 net.read(temp1);
                                 RobotWarn.WarnFlag[RobotWarn.Warn.WIFIWarn.ordinal()]=false;
-                                RobotStatus.data.daTa[0]=temp[0];
-                                RobotStatus.data.daTa[1]=temp[1];
-                                for(int i=0;i<temp1.length;i++)
-                                    RobotStatus.data.daTa[i+2]=temp1[i];
-                                RobotStatus.data.length=8;
+                                f4data.daTa[0]=temp[0];
+                                f4data.daTa[1]=temp[1];
+                                for(int i=0;i<temp1.length;i++) f4data.daTa[i+2]=temp1[i];
+                                f4data.length=8;
                                 break;
                             case 0x89:
                                 temp1=new byte[2];
                                 net.read(temp1);
-                                for(int i=0;i<temp1.length;i++) RobotStatus.data.daTa[i+2]=temp1[i];
-                                RobotStatus.data.length=4;
+                                for(int i=0;i<temp1.length;i++) f4data.daTa[i+2]=temp1[i];
+                                f4data.length=4;
                                 warntimes[0] = 0;
                                 RobotWarn.WarnFlag[RobotWarn.Warn.SMOKEWarn.ordinal()] = true;//警告
                                 break;
                             case 0x8A:
                                 temp1=new byte[2];
                                 net.read(temp1);
-                                for(int i=0;i<temp1.length;i++) RobotStatus.data.daTa[i+2]=temp1[i];
-                                RobotStatus.data.length=4;
+                                for(int i=0;i<temp1.length;i++) f4data.daTa[i+2]=temp1[i];
+                                f4data.length=4;
                                 warntimes[1] = 0;
                                 RobotWarn.WarnFlag[RobotWarn.Warn.GASWarn.ordinal()] = true;//警告
                                 break;
                             case 0x83:
                                 temp1=new byte[2];
                                 net.read(temp1);
-                                for(int i=0;i<temp1.length;i++) RobotStatus.data.daTa[i+2]=temp1[i];
-                                RobotStatus.data.length=4;
+                                for(int i=0;i<temp1.length;i++) f4data.daTa[i+2]=temp1[i];
+                                f4data.length=4;
                                 warntimes[2] = 0;
                                 RobotWarn.WarnFlag[RobotWarn.Warn.POSTUREWarn.ordinal()] = true;//警告
                                 break;
                             case 0x84:
                                 temp1=new byte[2];
                                 net.read(temp1);
-                                for(int i=0;i<temp1.length;i++) RobotStatus.data.daTa[i+2]=temp1[i];
-                                RobotStatus.data.length=4;
+                                for(int i=0;i<temp1.length;i++) f4data.daTa[i+2]=temp1[i];
+                                f4data.length=4;
                                 warntimes[3] = 0;
                                 RobotWarn.WarnFlag[RobotWarn.Warn.DISTANCEWarn.ordinal()] = true;//警告
                                 break;
                             case 0x81:
                                 temp1=new byte[2];
                                 net.read(temp1);
-                                for(int i=0;i<temp1.length;i++) RobotStatus.data.daTa[i+2]=temp1[i];
-                                RobotStatus.data.length=4;
+                                for(int i=0;i<temp1.length;i++) f4data.daTa[i+2]=temp1[i];
+                                f4data.length=4;
                                 break;
                             case 0x82:
                                 temp1=new byte[2];
                                 net.read(temp1);
-                                for(int i=0;i<temp1.length;i++) RobotStatus.data.daTa[i+2]=temp1[i];
-                                RobotStatus.data.length=4;
+                                for(int i=0;i<temp1.length;i++) f4data.daTa[i+2]=temp1[i];
+                                f4data.length=4;
                                 warntimes[4] = 0;
                                 RobotWarn.WarnFlag[RobotWarn.Warn.UDPWarn.ordinal()] = true;//警告
                                 break;
                             case 0x86:
                                 temp1=new byte[2];
                                 net.read(temp1);
-                                for(int i=0;i<temp1.length;i++) RobotStatus.data.daTa[i+2]=temp1[i];
-                                RobotStatus.data.length=4;
+                                for(int i=0;i<temp1.length;i++) f4data.daTa[i+2]=temp1[i];
+                                f4data.length=4;
                                 warntimes[5] = 0;
                                 RobotWarn.WarnFlag[RobotWarn.Warn.TCPWarn.ordinal()] = true;//警告
                                 break;
                             case 0x88:
                                 temp1=new byte[2];
                                 net.read(temp1);
-                                for(int i=0;i<temp1.length;i++) RobotStatus.data.daTa[i+2]=temp1[i];
-                                RobotStatus.data.length=4;
+                                for(int i=0;i<temp1.length;i++) f4data.daTa[i+2]=temp1[i];
+                                f4data.length=4;
                                 warntimes[6] = 0;
                                 RobotWarn.WarnFlag[RobotWarn.Warn.MOTORWarn.ordinal()] = true;//警告
                                 break;
                             case 0x95:
                                 temp1=new byte[2];
                                 net.read(temp1);
-                                for(int i=0;i<temp1.length;i++) RobotStatus.data.daTa[i+2]=temp1[i];
-                                RobotStatus.data.length=4;
+                                for(int i=0;i<temp1.length;i++) f4data.daTa[i+2]=temp1[i];
+                                f4data.length=4;
                                 warntimes[7] = 0;
                                 RobotWarn.WarnFlag[RobotWarn.Warn.DATAWarn.ordinal()] = true;//警告
                                 break;
                             case 0x85:
                                 temp1=new byte[2];
                                 net.read(temp1);
-                                for(int i=0;i<temp1.length;i++) RobotStatus.data.daTa[i+2]=temp1[i];
-                                RobotStatus.data.length=4;
+                                for(int i=0;i<temp1.length;i++) f4data.daTa[i+2]=temp1[i];
+                                f4data.length=4;
                                 warntimes[8] = 0;
                                 RobotWarn.WarnFlag[RobotWarn.Warn.MCUWarn.ordinal()] = true;//警告
                                 break;
@@ -292,21 +349,6 @@ public class toF4 implements Runnable
                         /**
                          * 取消警告
                          * */
-//                        if ((temp[1] & 0xFF) != 0x89) {
-//                            warntimes[0]++;
-//                            if (warntimes[0] % 10 == 0)
-//                                RobotWarn.WarnFlag[RobotWarn.Warn.SMOKEWarn.ordinal()] = false;//警告
-//                        }
-//                        if ((temp[1] & 0xFF) != 0x8A) {
-//                            warntimes[1]++;
-//                            if (warntimes[1] % 10 == 0)
-//                                RobotWarn.WarnFlag[RobotWarn.Warn.GASWarn.ordinal()] = false;//警告
-//                        }
-//                        if ((temp[1] & 0xFF) != 0x83) {
-//                            warntimes[2]++;
-//                            if (warntimes[2] % 10 == 0)
-//                                RobotWarn.WarnFlag[RobotWarn.Warn.POSTUREWarn.ordinal()] = false;//警告
-//                        }
                         if ((temp[1] & 0xFF) != 0x84) {
                             warntimes[3]++;
                             if (warntimes[3] % 10 == 0){
@@ -340,7 +382,7 @@ public class toF4 implements Runnable
                                 RobotWarn.WarnFlag[RobotWarn.Warn.MCUWarn.ordinal()] = false;
                         }
                     havedata=true;
-                    RobotStatus.processRobotData();
+                    processRobotData();
                 }
             }else//发送环节
             {
@@ -425,7 +467,7 @@ public class toF4 implements Runnable
                     }
                     else if (sta == 3) {
                         if (sendflag[CMD.SPEED.ordinal()] != 0) {//一种发送命令
-                            if(RobotStatus.status==InfoForRobot.STATUS.QUICKSTOP||RobotStatus.status==InfoForRobot.STATUS.STOP)
+                            if(InfoForRobot.status==InfoForRobot.STATUS.QUICKSTOP||InfoForRobot.status==InfoForRobot.STATUS.STOP)
                                 setSpeed(0);
                             else if (sendflag[CMD.SPEED.ordinal()] % 4 == 2) {//一种发送命令 中速
                                 setSpeed(50);
