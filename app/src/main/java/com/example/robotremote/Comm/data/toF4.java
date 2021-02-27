@@ -181,6 +181,7 @@ public class toF4 implements Runnable
             }
         } else {
             Log.d("CRC WRONG ","WRONG");
+            net.run();
             for (int i=0;i<f4data.length;i++) {
                 Log.d("CRC DATA["+i+"]",Integer.toHexString( f4data.daTa[i]));
                 f4data.daTa[i] = 0;

@@ -73,15 +73,15 @@ public class MainActivity extends Activity {
     /**
      * 子线程
      * */
-    private Thread    remotetof4th;
-    private Thread    f4toremoteth;
-    private Thread    remotetof1th;
-    private Thread    f1toremoteth;
-    private Thread    robotwarnTextviewth;
-    private Thread    netth;
-    private Thread    initThread;
-    private Thread    logicth;
-    private Thread    warnth;
+    private Thread    remotetof4th;         //循环线程
+    private Thread    f4toremoteth;         //循环线程
+    private Thread    remotetof1th;         //循环线程
+    private Thread    f1toremoteth;         //循环线程
+    private Thread    robotwarnTextviewth;  //循环线程
+    private Thread    netth;                //单次线程
+    private Thread    initThread;           //单次线程
+    private Thread    logicth;              //循环线程
+    private Thread    warnth;               //循环线程
     private Thread    ledth;
     private Thread    adcth;
     private Thread    keyth;
