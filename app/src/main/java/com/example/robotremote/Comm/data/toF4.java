@@ -301,6 +301,7 @@ public class toF4 implements Runnable
                                 RobotWarn.WarnFlag[RobotWarn.Warn.DISTANCEWarn.ordinal()] = true;//警告
                                 break;
                             case 0x81:
+                            case 0x8C:
                                 temp1=new byte[2];
                                 net.read(temp1);
                                 for(int i=0;i<temp1.length;i++) f4data.daTa[i+2]=temp1[i];

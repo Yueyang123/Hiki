@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -33,6 +35,7 @@ import com.example.robotremote.Hardware.Gpio.GpioCol;
 import com.example.robotremote.Hardware.Key.KeyCol;
 import com.example.robotremote.Hardware.Led.LedCol;
 import com.example.robotremote.Hardware.NetCol.NetCol;
+import com.example.robotremote.Hardware.NetCol.Wifi;
 import com.example.robotremote.R;
 import com.example.robotremote.Hardware.Serial.SerialCol;
 import com.example.robotremote.Comm.data.toF4;
@@ -334,6 +337,7 @@ public class MainActivity extends Activity {
                 if(toF1.tof1Timeout==0)
                 {
                     Log.d(TAG,"F1重新链接");
+                    serialCol.reconnect();
                     RobotWarn.WarnFlag[RobotWarn.Warn.LORAWarn.ordinal()]=true;
                     toF1.tof1Timeout=10000;
                 }
@@ -511,6 +515,11 @@ public class MainActivity extends Activity {
         grayColorFilter = new ColorMatrixColorFilter(cm);
         Smoke.setColorFilter(grayColorFilter);
         alarm.setColorFilter(grayColorFilter);
+
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiConfiguration configuration = Wifi.configWifiInfo(context, "IRIS", "shiyanshi1209.", 2);
+        int netId = configuration.networkId;
+        wifiManager.enableNetwork(netId, true);
 
         leftButton.setOnTouchListener(new View.OnTouchListener() {
             @Override

@@ -66,6 +66,11 @@ public class toF1 implements Runnable {
         this.Dir = Dir;
     }
 
+    public void reconnect()
+    {
+        serialCol.reconnect();
+    }
+
     static byte[] concat(byte[] a, byte[] b) {//字符串链接函数
 
         byte[] c = new byte[a.length + b.length];
@@ -260,7 +265,6 @@ public class toF1 implements Runnable {
                     if (sendflag[CMD.HEART.ordinal()] > 3)
                         sendflag[CMD.HEART.ordinal()] = 0;//超过三次不再发送
                 }
-
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {

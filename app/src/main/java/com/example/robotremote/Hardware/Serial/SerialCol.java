@@ -24,6 +24,13 @@ public class SerialCol{
         this.SerialPath=SericalPath;
     }
 
+    public void reconnect()
+    {
+        mSerialPort = getSerialPort(SerialPath,baudrate,0);
+        mOutputStream = mSerialPort.getOutputStream();
+        mInputStream = mSerialPort.getInputStream();
+    }
+
     @Override
     public void finalize()
     {
