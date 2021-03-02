@@ -360,12 +360,12 @@ public class toF4 implements Runnable
                         }
                         if ((temp[1] & 0xFF) != 0x82) {
                             warntimes[4]++;
-                            if (warntimes[4] % 10 == 0)
+                            if (warntimes[4] % 20 == 0)
                                 RobotWarn.WarnFlag[RobotWarn.Warn.UDPWarn.ordinal()] = false;//警告
                         }
                         if ((temp[1] & 0xFF) != 0x86) {
                             warntimes[5]++;
-                            if (warntimes[5] % 10 == 0)
+                            if (warntimes[5] % 20 == 0)
                                 RobotWarn.WarnFlag[RobotWarn.Warn.TCPWarn.ordinal()] = false;
                         }
                         if ((temp[1] & 0xFF) != 0x88) {
