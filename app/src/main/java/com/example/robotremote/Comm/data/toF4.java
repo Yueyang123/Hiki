@@ -138,9 +138,11 @@ public class toF4 implements Runnable
             switch ((int)f4data.daTa[1]&0xFF)
             {
                 case 0xC1:
+                    Log.d(TAG,"LEFT");
                     InfoForRobot.status= InfoForRobot.STATUS.LEFT;
                     break;
                 case 0xC2:
+                    Log.d(TAG,"RIGHT");
                     InfoForRobot.status= InfoForRobot.STATUS.RIGHT;
                     break;
                 case 0xC3:
@@ -212,7 +214,9 @@ public class toF4 implements Runnable
                         switch (temp[1]&0xFF)
                         {
                             case 0xC1:
+                                InfoForRobot.status= InfoForRobot.STATUS.LEFT;
                             case 0xC2:
+                                InfoForRobot.status= InfoForRobot.STATUS.RIGHT;
                             case 0xC3:
                             case 0xC4:
                                 temp1=new byte[5];

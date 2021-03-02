@@ -14,13 +14,8 @@ public class Wifi {
         if (mWifiManager != null) {
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED);
             List<WifiConfiguration> existingConfigs = mWifiManager.getConfiguredNetworks();
-            for (WifiConfiguration existingConfig : existingConfigs) {
-                if (existingConfig == null) continue;
-                if (existingConfig.SSID.equals("\"" + SSID + "\"")  /*&&  existingConfig.preSharedKey.equals("\""  +  password  +  "\"")*/) {
-                    config = existingConfig;
-                    break;
-                }
-            }
+            if(existingConfigs!=null)
+            config = existingConfigs.get(0);
         }
         if (config == null) {
             config = new WifiConfiguration();

@@ -337,6 +337,7 @@ public class MainActivity extends Activity {
                 if(toF1.tof1Timeout==0)
                 {
                     Log.d(TAG,"F1重新链接");
+                    serialCol=new SerialCol("/dev/ttySAC2",9600);
                     serialCol.reconnect();
                     RobotWarn.WarnFlag[RobotWarn.Warn.LORAWarn.ordinal()]=true;
                     toF1.tof1Timeout=10000;

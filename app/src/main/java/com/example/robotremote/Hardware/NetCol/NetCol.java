@@ -64,6 +64,10 @@ public class NetCol implements Runnable{
                 cin.close();
             }
             clintsocket=new Socket(severip,port);
+            clintsocket.setReceiveBufferSize(4096);
+            clintsocket.setSoLinger(true, 30);
+            clintsocket.setTcpNoDelay(true);
+            clintsocket.setKeepAlive(true);
             connectstatus = true;
             Log.d(TAG, "CONNECT " + clintsocket.getRemoteSocketAddress() + " SUCCESS ");
             cio=clintsocket.getOutputStream();
